@@ -14,8 +14,8 @@ class ProductTypeController extends Controller
     {
         $data = ProductType::all();
         return response([
-            "massage" => 'product_types list',
-            "data" => $data
+            "message" => "List Product",
+            "data" => $data,
         ]);
     }
 
@@ -24,14 +24,22 @@ class ProductTypeController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'type_name' => 'required|unique:product_types,type_name',
+        $request->validate(
+            [
+                'type_name' => 'required|unique:product_types,type_name',
+            ],
+            [
+                'type_name.required' => 'is required',
+                'type_name.unique' => 'already exist',
+            ]
+        );
+
+        ProductType::create([
+            'type_name' => $request->type_name,
         ]);
 
-        ProductType::create(['type_name' => $request->type_name,]);
-        return response(["massage" => "product type created successfully"],201);
+        return response(["message" => "Product Type Created Successfully"], 201);
     }
-    
 
     /**
      * Display the specified resource.
@@ -41,13 +49,14 @@ class ProductTypeController extends Controller
         $data = ProductType::find($id);
         if (is_null($data)) {
             return response([
-                "massage" => "Product type not found",
-                "data" => []
-            ],404);
+                "message" => "ini adalah sebuah method",
+                "data" => [],
+            ], 404);
         }
+
         return response([
-            "massage" => 'product_types list',
-            "data" => $data
+            "message" => "ini adalah sebuah method",
+            "data" => $data,
         ]);
     }
 
@@ -61,15 +70,24 @@ class ProductTypeController extends Controller
         ]);
 
         $data = ProductType::find($id);
+
         if (is_null($data)) {
             return response([
-                "massage" => "Product type not found",
-                "data" => []
-            ],404);
+                "message" => "ini adalah sebuah method",
+                "data" => [],
+            ], 404);
         }
+
+
         $data->type_name = $request->type_name;
         $data->save();
-        return response(["massage" => "product type updated successfully"],200);
+
+
+        // ProductType::create([
+        //     'type_name' => $request->type_name,
+        // ]);
+
+        return response(["message" => "Product Type Update Successfully"], 200);
     }
 
     /**
@@ -80,14 +98,16 @@ class ProductTypeController extends Controller
         $data = ProductType::find($id);
         if (is_null($data)) {
             return response([
-                "massage" => "Product type not found",
-                "data" => []
-            ],404);
+                "message" => "Product Not available",
+                "data" => [],
+            ], 404);
         }
+
         $data->delete();
+
         return response([
-            "massage" => 'Product is deleted successfully',
-            "data" => $data
+            "message" => "Product Is Deleted Successfully",
+            "data" => $data,
         ]);
     }
 }
